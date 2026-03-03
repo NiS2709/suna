@@ -1,3 +1,4 @@
+
 'use client';
 
 import { cn } from '@/lib/utils';
@@ -9,28 +10,49 @@ interface NexusLogoProps {
 }
 
 export function NexusLogo({ size = 24, variant = 'symbol', className }: NexusLogoProps) {
-  // For logomark variant, use logomark-white.svg which is already white
-  // and invert it for light mode using CSS (no JS needed)
-  if (variant === 'logomark') {
-    return (
-      <img
-        src="/logomark-white.svg"
-        alt="Nexus"
-        className={cn('invert dark:invert-0 flex-shrink-0', className)}
-        style={{ height: `${size}px`, width: 'auto' }}
-        suppressHydrationWarning
+  const logoSvg = (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={cn('flex-shrink-0', className)}
+    >
+      <path
+        d="M12 2L2 7V17L12 22L22 17V7L12 2Z"
+        stroke="#64FFDA"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
-    );
+      <path
+        d="M2 7L12 12L22 7"
+        stroke="#64FFDA"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 22V12"
+        stroke="#64FFDA"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M17 4.5L7 9.5"
+        stroke="#64FFDA"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+
+  if (variant === 'logomark') {
+    return logoSvg;
   }
 
-  // Default symbol variant behavior - invert for dark mode
-  return (
-    <img
-      src="/nexus-symbol.svg"
-      alt="Nexus"
-      className={cn('dark:invert flex-shrink-0', className)}
-      style={{ width: `${size}px`, height: `${size}px` }}
-      suppressHydrationWarning
-    />
-  );
+  return logoSvg;
 }
