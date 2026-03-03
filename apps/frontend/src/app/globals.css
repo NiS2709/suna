@@ -802,22 +802,22 @@
   animation: stream-word-pop 200ms ease-out forwards;
 }
 
-.kortix-markdown [data-streamdown-animating="true"] > * {
+.nexus-markdown [data-streamdown-animating="true"] > * {
   animation: stream-fade-in 200ms ease-out forwards;
 }
 
-.kortix-markdown [data-streamdown-animating="true"] p,
-.kortix-markdown [data-streamdown-animating="true"] li,
-.kortix-markdown [data-streamdown-animating="true"] h1,
-.kortix-markdown [data-streamdown-animating="true"] h2,
-.kortix-markdown [data-streamdown-animating="true"] h3,
-.kortix-markdown [data-streamdown-animating="true"] h4,
-.kortix-markdown [data-streamdown-animating="true"] h5,
-.kortix-markdown [data-streamdown-animating="true"] h6 {
+.nexus-markdown [data-streamdown-animating="true"] p,
+.nexus-markdown [data-streamdown-animating="true"] li,
+.nexus-markdown [data-streamdown-animating="true"] h1,
+.nexus-markdown [data-streamdown-animating="true"] h2,
+.nexus-markdown [data-streamdown-animating="true"] h3,
+.nexus-markdown [data-streamdown-animating="true"] h4,
+.nexus-markdown [data-streamdown-animating="true"] h5,
+.nexus-markdown [data-streamdown-animating="true"] h6 {
   animation: stream-word-pop 180ms ease-out forwards;
 }
 
-.kortix-markdown [data-streamdown-animating="true"] code {
+.nexus-markdown [data-streamdown-animating="true"] code {
   animation: stream-char-reveal 150ms ease-out forwards;
 }
 
@@ -840,17 +840,17 @@
 }
 
 
-.kortix-markdown.streaming-active {
+.nexus-markdown.streaming-active {
   position: relative;
 }
 
-.kortix-markdown.streaming-active p:last-child,
-.kortix-markdown.streaming-active li:last-child,
-.kortix-markdown.streaming-active div:last-child {
+.nexus-markdown.streaming-active p:last-child,
+.nexus-markdown.streaming-active li:last-child,
+.nexus-markdown.streaming-active div:last-child {
   display: inline;
 }
 
-.kortix-markdown[data-streaming="true"] > *:last-child {
+.nexus-markdown[data-streaming="true"] > *:last-child {
   animation: stream-fade-in 180ms ease-out;
 }
 
@@ -880,7 +880,7 @@
   }
 }
 
-.kortix-markdown[data-streaming="true"] > *:last-child {
+.nexus-markdown[data-streaming="true"] > *:last-child {
   animation: blur-fade-in 0.3s ease-out forwards;
 }
 
@@ -921,7 +921,7 @@
   display: inline;
 }
 
-/* Pulse heartbeat animation for reasoning section Kortix icon */
+/* Pulse heartbeat animation for reasoning section Nexus icon */
 @keyframes pulse-heartbeat {
   0%, 100% {
     transform: scale(1);

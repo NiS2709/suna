@@ -11,7 +11,7 @@ from core.utils.auth_utils import verify_and_get_user_id_from_jwt
 from core.utils.logger import logger
 from core.utils.config import config
 from core.billing.subscriptions import free_tier_service
-from core.utils.suna_default_agent_service import SunaDefaultAgentService
+from core.utils.nexus_default_agent_service import NexusDefaultAgentService
 from core.services.supabase import DBConnection
 from core.services.email import email_service
 
@@ -95,14 +95,14 @@ async def initialize_user_account(account_id: str, email: Optional[str] = None, 
                     'error': error_msg
                 }
         
-        logger.info(f"[SETUP] Installing Suna agent for {account_id}")
+        logger.info(f"[SETUP] Installing Nexus agent for {account_id}")
         try:
-            suna_service = SunaDefaultAgentService(db)
-            agent_id = await suna_service.install_suna_agent_for_user(account_id)
+            nexus_service = NexusDefaultAgentService(db)
+            agent_id = await nexus_service.install_nexus_agent_for_user(account_id)
             if not agent_id:
-                logger.warning(f"[SETUP] Failed to install Suna agent for {account_id}")
+                logger.warning(f"[SETUP] Failed to install Nexus agent for {account_id}")
         except Exception as e:
-            logger.error(f"[SETUP] Error installing Suna agent for {account_id}: {e}")
+            logger.error(f"[SETUP] Error installing Nexus agent for {account_id}: {e}")
             agent_id = None
         
         if user_record:
@@ -232,7 +232,7 @@ async def handle_user_created_webhook(
     request to this endpoint using pg_net.
     
     This webhook automatically:
-    1. Initializes account (free tier subscription + Suna agent)
+    1. Initializes account (free tier subscription + Nexus agent)
     2. Sends welcome email
     
     All initialization happens automatically on the backend, eliminating

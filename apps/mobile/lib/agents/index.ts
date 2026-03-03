@@ -10,37 +10,37 @@ export * from './hooks';
 export { agentKeys, useAgents, useAgent, useCreateAgent, useUpdateAgent, useDeleteAgent } from './hooks';
 
 /**
- * Check if an agent is the default Kortix/SUNA agent
+ * Check if an agent is the default Nexus/NEXUS agent
  * Uses metadata and name checks - no hardcoded IDs
  */
-export const isKortixDefaultAgent = (agent?: { 
+export const isNexusDefaultAgent = (agent?: { 
   agent_id?: string; 
   name?: string; 
-  metadata?: { is_suna_default?: boolean } 
+  metadata?: { is_nexus_default?: boolean } 
 } | null): boolean => {
   if (!agent) return false;
   
   // Check metadata first (most reliable)
-  if (agent.metadata?.is_suna_default) return true;
+  if (agent.metadata?.is_nexus_default) return true;
   
   // Fallback to name checks
   const name = agent.name?.toLowerCase();
-  return name === 'kortix' ||
-         name === 'suna' ||
+  return name === 'nexus' ||
+         name === 'nexus' ||
          name === 'superworker' ||
-         name === 'kortix super worker';
+         name === 'nexus super worker';
 };
 
 /**
- * Check if an agent ID represents the default Kortix agent
+ * Check if an agent ID represents the default Nexus agent
  * For cases where we only have an ID and need to check against a list of agents
  */
-export const isKortixDefaultAgentId = (
+export const isNexusDefaultAgentId = (
   agentId: string | null | undefined, 
-  agents: Array<{ agent_id?: string; name?: string; metadata?: { is_suna_default?: boolean } }>
+  agents: Array<{ agent_id?: string; name?: string; metadata?: { is_nexus_default?: boolean } }>
 ): boolean => {
-  if (!agentId) return true; // No agent ID = default Kortix
+  if (!agentId) return true; // No agent ID = default Nexus
   const agent = agents.find(a => a.agent_id === agentId);
-  return isKortixDefaultAgent(agent);
+  return isNexusDefaultAgent(agent);
 };
 

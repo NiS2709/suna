@@ -21,15 +21,15 @@ export function WorkflowsScreen({ agentId }: WorkflowsScreenProps) {
         }
     }, [agent?.agentpress_tools]);
 
-    const isSunaAgent = agent?.metadata?.is_suna_default || false;
+    const isNexusAgent = agent?.metadata?.is_nexus_default || false;
     const restrictions = agent?.metadata?.restrictions || {};
-    const areToolsEditable = (restrictions.tools_editable !== false) && !isSunaAgent;
+    const areToolsEditable = (restrictions.tools_editable !== false) && !isNexusAgent;
 
     const handleToolsChange = async (newTools: Record<string, boolean | { enabled: boolean; description: string }>) => {
         if (!areToolsEditable) {
-            if (isSunaAgent) {
+            if (isNexusAgent) {
                 toast.error("Tools cannot be edited", {
-                    description: "Kortix's tools are managed centrally.",
+                    description: "Nexus's tools are managed centrally.",
                 });
             }
             return;
@@ -68,7 +68,7 @@ export function WorkflowsScreen({ agentId }: WorkflowsScreenProps) {
                     tools={tools}
                     onToolsChange={handleToolsChange}
                     disabled={!areToolsEditable}
-                    isSunaAgent={isSunaAgent}
+                    isNexusAgent={isNexusAgent}
                     isLoading={updateAgentMutation.isPending}
                 />
             </div>

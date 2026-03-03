@@ -15,27 +15,27 @@ interface AgentAvatarProps extends ViewProps {
  * Automatically handles:
  * - Agent icon from backend (icon_name)
  * - Agent colors (icon_color, icon_background)
- * - SUNA/KORTIX SUPER WORKER special case (Kortix symbol)
+ * - NEXUS/NEXUS SUPER WORKER special case (Nexus symbol)
  * - Fallback to agent name initial
  * 
  * @example
  * <AgentAvatar agent={agent} size={48} />
  */
 export function AgentAvatar({ agent, size = 48, style, ...props }: AgentAvatarProps) {
-  // Check if this is the SUNA/KORTIX SUPER WORKER
-  const isSunaAgent = agent?.metadata?.is_suna_default || 
-                      agent?.name?.toLowerCase() === 'suna' ||
+  // Check if this is the NEXUS/NEXUS SUPER WORKER
+  const isNexusAgent = agent?.metadata?.is_nexus_default || 
+                      agent?.name?.toLowerCase() === 'nexus' ||
                       agent?.name?.toLowerCase() === 'superworker' ||
-                      agent?.name?.toLowerCase() === 'kortix super worker';
+                      agent?.name?.toLowerCase() === 'nexus super worker';
 
   return (
     <Avatar
       variant="agent"
       size={size}
       icon={agent?.icon_name || undefined}
-      iconColor={isSunaAgent ? undefined : agent?.icon_color}
-      backgroundColor={isSunaAgent ? undefined : agent?.icon_background}
-      useKortixSymbol={isSunaAgent}
+      iconColor={isNexusAgent ? undefined : agent?.icon_color}
+      backgroundColor={isNexusAgent ? undefined : agent?.icon_background}
+      useNexusSymbol={isNexusAgent}
       fallbackText={agent?.name}
       style={style}
       {...props}

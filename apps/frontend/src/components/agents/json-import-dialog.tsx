@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FileJson, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { KortixLoader } from '@/components/ui/kortix-loader';
+import { NexusLoader } from '@/components/ui/nexus-loader';
 import { toast } from '@/lib/toast';
 import { ProfileConnector } from './installation/streamlined-profile-connector';
 import { CustomServerStep } from './installation/custom-server-step';
@@ -261,7 +261,7 @@ export const JsonImportDialog: React.FC<JsonImportDialogProps> = ({
           Cancel
         </Button>
         <Button onClick={analyzeJson} disabled={analyzeJsonMutation.isPending || !jsonText.trim()}>
-          {analyzeJsonMutation.isPending && <KortixLoader customSize={16} />}
+          {analyzeJsonMutation.isPending && <NexusLoader customSize={16} />}
           {analyzeJsonMutation.isPending ? 'Analyzing...' : 'Next'}
         </Button>
       </div>
@@ -342,7 +342,7 @@ export const JsonImportDialog: React.FC<JsonImportDialogProps> = ({
             >
               {importJsonMutation.isPending ? (
                 <>
-                  <KortixLoader customSize={16} className="mr-1" />
+                  <NexusLoader customSize={16} className="mr-1" />
                   Importing...
                 </>
               ) : (
@@ -368,7 +368,7 @@ export const JsonImportDialog: React.FC<JsonImportDialogProps> = ({
 
   const renderImportingStep = () => (
     <div className="flex flex-col items-center justify-center py-12 space-y-4">
-      <KortixLoader size="large" />
+      <NexusLoader size="large" />
       <div className="text-center">
         <h3 className="font-semibold">Importing Worker</h3>
         <p className="text-sm text-muted-foreground">

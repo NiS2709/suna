@@ -72,7 +72,7 @@ def check_old_imports():
     # Only check for actual module imports, not package imports
     old_patterns = [
         ("core.runtime_cache", "core.cache.runtime_cache"),
-        ("core.suna_config", "core.config.suna_config"),
+        ("core.nexus_config", "core.config.nexus_config"),
         ("core.config_helper", "core.config.config_helper"),
     ]
     

@@ -1,10 +1,10 @@
 {
-  "name": "agentpress",
+  "name": "nexus",
   "private": true,
   "scripts": {
-    "dev:frontend": "pnpm --filter Kortix dev",
-    "dev:mobile": "pnpm --filter kortix dev",
-    "build:frontend": "pnpm --filter Kortix build"
+    "dev:frontend": "pnpm --filter Nexus dev",
+    "dev:mobile": "pnpm --filter nexus dev",
+    "build:frontend": "pnpm --filter Nexus build"
   },
   "pnpm": {
     "overrides": {

@@ -12,7 +12,7 @@ import { useTheme } from 'next-themes';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Check, AlertCircle, Save, RotateCcw } from 'lucide-react';
-import { KortixLoader } from '@/components/ui/kortix-loader';
+import { NexusLoader } from '@/components/ui/nexus-loader';
 import {
   Tooltip,
   TooltipContent,
@@ -529,7 +529,7 @@ export function CodeEditor({
             disabled
             className="gap-1.5 h-7 px-2 text-xs"
           >
-            <KortixLoader size="small" />
+            <NexusLoader size="small" />
             <span className="hidden sm:inline">Saving</span>
           </Button>
         );

@@ -98,10 +98,10 @@ class AgentConfigTool(AgentBuilderBaseTool):
             current_agent = agent_result.data[0]
 
             metadata = current_agent.get('metadata', {})
-            is_suna_default = metadata.get('is_suna_default', False)
+            is_nexus_default = metadata.get('is_nexus_default', False)
             
-            # Enforce Suna restrictions (simplified)
-            if is_suna_default:
+            # Enforce Nexus restrictions (simplified)
+            if is_nexus_default:
                 restricted_fields = []
                 if name is not None:
                     restricted_fields.append("name")
@@ -112,8 +112,8 @@ class AgentConfigTool(AgentBuilderBaseTool):
                 
                 if restricted_fields:
                     return self.fail_response(
-                        f"Cannot modify {', '.join(restricted_fields)} for Kortix. "
-                        f"Kortix's core identity is centrally managed. You can still add MCPs and triggers."
+                        f"Cannot modify {', '.join(restricted_fields)} for Nexus. "
+                        f"Nexus's core identity is centrally managed. You can still add MCPs and triggers."
                     )
 
             agent_update_fields = {}

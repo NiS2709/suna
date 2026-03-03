@@ -165,8 +165,8 @@ class ConfigLoader:
                     "COMPOSIO_WEBHOOK_SECRET", ""
                 ),
             },
-            "kortix": {
-                "KORTIX_ADMIN_API_KEY": backend_env.get("KORTIX_ADMIN_API_KEY", ""),
+            "nexus": {
+                "NEXUS_ADMIN_API_KEY": backend_env.get("NEXUS_ADMIN_API_KEY", ""),
             },
             "vapi": {
                 "VAPI_PRIVATE_KEY": backend_env.get("VAPI_PRIVATE_KEY", ""),

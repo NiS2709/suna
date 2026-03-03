@@ -1,4 +1,4 @@
-# Kortix EKS Operations Guide
+# Nexus EKS Operations Guide
 
 Everything you need to know about how our Kubernetes setup works, how to monitor, scale, and what happens when things go wrong.
 
@@ -26,17 +26,17 @@ Production runs on three targets simultaneously:
 
 ```
 User request
-  → Cloudflare DNS (api-eks.kortix.com)
+  → Cloudflare DNS (api-eks.nexus.com)
   → AWS Application Load Balancer (ALB)
-  → EKS cluster (suna-eks)          ← this is the primary
+  → EKS cluster (nexus-eks)          ← this is the primary
   → Your app pods
 
 We also have:
   → Lightsail instance               ← legacy, still running
-  → ECS cluster (suna-ecs)           ← legacy, still running
+  → ECS cluster (nexus-ecs)           ← legacy, still running
 ```
 
-The EKS cluster is the main production target. Lightsail and ECS are still deployed to, but EKS handles the real traffic through `api-eks.kortix.com`.
+The EKS cluster is the main production target. Lightsail and ECS are still deployed to, but EKS handles the real traffic through `api-eks.nexus.com`.
 
 **Region:** `us-west-2` (Oregon)
 
@@ -57,24 +57,24 @@ If you're new to Kubernetes, here's the mental model. Think of it like a restaur
 ### The actual resources in our cluster
 
 ```
-Cluster: suna-eks (EKS v1.31)
-├── Node Group: suna-api-nodes
+Cluster: nexus-eks (EKS v1.31)
+├── Node Group: nexus-api-nodes
 │   ├── Instance type: c7i.2xlarge (8 vCPU, 16 GB RAM)
 │   ├── Min nodes: 2
 │   ├── Max nodes: 8
 │   └── Desired: 3
 │
-├── Namespace: suna
-│   ├── Deployment: suna-api (our backend app)
+├── Namespace: nexus
+│   ├── Deployment: nexus-api (our backend app)
 │   │   ├── Base replicas: 4 pods
 │   │   ├── Each pod: 500m-1500m CPU, 2Gi-3Gi memory
 │   │   └── Each pod runs 2 Gunicorn workers
 │   │
-│   ├── Service: suna-api (ClusterIP, routes traffic to pods)
-│   ├── HPA: suna-api (autoscales 4-15 pods based on CPU)
-│   ├── PDB: suna-api (keeps at least 50% of pods alive during disruptions)
-│   ├── Ingress: suna-api (ALB → internet-facing)
-│   └── Secret: suna-env (all the env vars from Secrets Manager)
+│   ├── Service: nexus-api (ClusterIP, routes traffic to pods)
+│   ├── HPA: nexus-api (autoscales 4-15 pods based on CPU)
+│   ├── PDB: nexus-api (keeps at least 50% of pods alive during disruptions)
+│   ├── Ingress: nexus-api (ALB → internet-facing)
+│   └── Secret: nexus-env (all the env vars from Secrets Manager)
 │
 ├── Namespace: kube-system
 │   ├── AWS Load Balancer Controller (manages the ALB)
@@ -378,13 +378,13 @@ New image deployed via rolling update
 The old pods keep running. Your users don't notice anything. To fix it:
 ```bash
 # See what's wrong
-kubectl describe pod -n suna -l app.kubernetes.io/name=suna-api
+kubectl describe pod -n nexus -l app.kubernetes.io/name=nexus-api
 
 # Roll back to the previous version
-kubectl rollout undo deployment/suna-api -n suna
+kubectl rollout undo deployment/nexus-api -n nexus
 
 # Verify
-kubectl rollout status deployment/suna-api -n suna
+kubectl rollout status deployment/nexus-api -n nexus
 ```
 
 ### All pods on all nodes go down (catastrophic failure)
@@ -406,16 +406,16 @@ Manual recovery if needed:
 ```bash
 # Check cluster status
 kubectl get nodes
-kubectl get pods -n suna
+kubectl get pods -n nexus
 
 # Force restart all pods
-kubectl rollout restart deployment/suna-api -n suna
+kubectl rollout restart deployment/nexus-api -n nexus
 
 # If nodes are gone, check AWS console for the managed node group
 # Or scale it manually:
 aws eks update-nodegroup-config \
-  --cluster-name suna-eks \
-  --nodegroup-name suna-api-nodes \
+  --cluster-name nexus-eks \
+  --nodegroup-name nexus-api-nodes \
   --scaling-config minSize=2,maxSize=8,desiredSize=3
 ```
 
@@ -427,7 +427,7 @@ We have three monitoring layers:
 
 ### 1. CloudWatch (AWS native)
 
-**Dashboard:** Go to AWS Console → CloudWatch → Dashboards → `suna-api-prod`
+**Dashboard:** Go to AWS Console → CloudWatch → Dashboards → `nexus-api-prod`
 
 Shows:
 - Node CPU utilization
@@ -454,7 +454,7 @@ Better Stack collects logs and metrics from all containers in the cluster using 
 
 - **Logs:** Telemetry → Logs (or Live tail)
 - **Dashboards:** Telemetry → Dashboards
-- **Uptime:** Set up HTTP monitors for `api-eks.kortix.com`
+- **Uptime:** Set up HTTP monitors for `api-eks.nexus.com`
 
 ### 3. Terminal monitoring
 
@@ -466,10 +466,10 @@ bash infra/scripts/k8s-monitor.sh
 
 # Or individual commands:
 kubectl top nodes                          # Node CPU/memory
-kubectl top pods -n suna                   # Pod CPU/memory
-kubectl get pods -n suna                   # Pod status
-kubectl get hpa -n suna                    # Autoscaler status
-kubectl get events -n suna --sort-by='.lastTimestamp'  # Recent events
+kubectl top pods -n nexus                   # Pod CPU/memory
+kubectl get pods -n nexus                   # Pod status
+kubectl get hpa -n nexus                    # Autoscaler status
+kubectl get events -n nexus --sort-by='.lastTimestamp'  # Recent events
 ```
 
 ---
@@ -480,57 +480,57 @@ kubectl get events -n suna --sort-by='.lastTimestamp'  # Recent events
 
 ```bash
 # What image is each pod running?
-kubectl get pods -n suna -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.containers[0].image}{"\n"}{end}'
+kubectl get pods -n nexus -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.containers[0].image}{"\n"}{end}'
 
 # Is the latest deploy live?
-kubectl get deployment suna-api -n suna -o jsonpath='{.spec.template.spec.containers[0].image}'
+kubectl get deployment nexus-api -n nexus -o jsonpath='{.spec.template.spec.containers[0].image}'
 
 # How many pods are running?
-kubectl get deployment suna-api -n suna
+kubectl get deployment nexus-api -n nexus
 
 # What's the HPA doing?
-kubectl get hpa -n suna
+kubectl get hpa -n nexus
 ```
 
 ### Restart pods (without redeploying)
 
 ```bash
 # Graceful rolling restart (zero downtime)
-kubectl rollout restart deployment/suna-api -n suna
+kubectl rollout restart deployment/nexus-api -n nexus
 
 # Watch the restart progress
-kubectl rollout status deployment/suna-api -n suna
+kubectl rollout status deployment/nexus-api -n nexus
 ```
 
 ### View logs
 
 ```bash
 # Logs from a specific pod
-kubectl logs <pod-name> -n suna
+kubectl logs <pod-name> -n nexus
 
-# Logs from all suna-api pods
-kubectl logs -l app.kubernetes.io/name=suna-api -n suna --tail=100
+# Logs from all nexus-api pods
+kubectl logs -l app.kubernetes.io/name=nexus-api -n nexus --tail=100
 
 # Follow logs in real-time
-kubectl logs -l app.kubernetes.io/name=suna-api -n suna -f
+kubectl logs -l app.kubernetes.io/name=nexus-api -n nexus -f
 
 # Logs from a crashed pod (previous container)
-kubectl logs <pod-name> -n suna --previous
+kubectl logs <pod-name> -n nexus --previous
 ```
 
 ### Scale manually
 
 ```bash
 # Scale pods (temporarily — HPA may override this)
-kubectl scale deployment/suna-api -n suna --replicas=6
+kubectl scale deployment/nexus-api -n nexus --replicas=6
 
 # To permanently change, update the HPA min:
-kubectl patch hpa suna-api -n suna -p '{"spec":{"minReplicas":6}}'
+kubectl patch hpa nexus-api -n nexus -p '{"spec":{"minReplicas":6}}'
 
 # Scale nodes (via AWS)
 aws eks update-nodegroup-config \
-  --cluster-name suna-eks \
-  --nodegroup-name suna-api-nodes \
+  --cluster-name nexus-eks \
+  --nodegroup-name nexus-api-nodes \
   --scaling-config minSize=3,maxSize=8,desiredSize=4
 ```
 
@@ -538,26 +538,26 @@ aws eks update-nodegroup-config \
 
 ```bash
 # See deployment history
-kubectl rollout history deployment/suna-api -n suna
+kubectl rollout history deployment/nexus-api -n nexus
 
 # Roll back to previous version
-kubectl rollout undo deployment/suna-api -n suna
+kubectl rollout undo deployment/nexus-api -n nexus
 
 # Roll back to a specific revision
-kubectl rollout undo deployment/suna-api -n suna --to-revision=3
+kubectl rollout undo deployment/nexus-api -n nexus --to-revision=3
 ```
 
 ### Debug a pod
 
 ```bash
 # See why a pod isn't starting
-kubectl describe pod <pod-name> -n suna
+kubectl describe pod <pod-name> -n nexus
 
 # Get a shell inside a running pod
-kubectl exec -it <pod-name> -n suna -- /bin/bash
+kubectl exec -it <pod-name> -n nexus -- /bin/bash
 
 # See resource usage
-kubectl top pod <pod-name> -n suna
+kubectl top pod <pod-name> -n nexus
 ```
 
 ### Check node health
@@ -570,7 +570,7 @@ kubectl get nodes -o wide
 kubectl describe node <node-name>
 
 # What's running on each node
-kubectl get pods -n suna -o wide
+kubectl get pods -n nexus -o wide
 ```
 
 ---
@@ -580,9 +580,9 @@ kubectl get pods -n suna -o wide
 Environment variables (API keys, database URLs, etc.) flow like this:
 
 ```
-AWS Secrets Manager (suna-env-prod)
+AWS Secrets Manager (nexus-env-prod)
   → CI/CD syncs to K8s secret (on every deploy)
-  → K8s secret: suna-env in namespace suna
+  → K8s secret: nexus-env in namespace nexus
   → Mounted as env vars in every pod
 ```
 
@@ -591,7 +591,7 @@ AWS Secrets Manager (suna-env-prod)
 **Option A: Through a deploy** (automatic)
 
 Every time CI/CD deploys to EKS, it syncs secrets from Secrets Manager. So:
-1. Update the value in AWS Secrets Manager (`suna-env-prod`)
+1. Update the value in AWS Secrets Manager (`nexus-env-prod`)
 2. Push to PRODUCTION branch (or trigger a deploy)
 3. The deploy job syncs the secret and deploys the new image
 
@@ -606,10 +606,10 @@ Or from the command line:
 ```bash
 # Fetch from Secrets Manager and apply to K8s
 SECRET_JSON=$(aws secretsmanager get-secret-value \
-  --secret-id suna-env-prod \
+  --secret-id nexus-env-prod \
   --query SecretString --output text)
 
-kubectl create secret generic suna-env -n suna \
+kubectl create secret generic nexus-env -n nexus \
   --from-env-file=<(echo "$SECRET_JSON" | python3 -c "
 import json, sys
 data = json.load(sys.stdin)
@@ -618,7 +618,7 @@ for k, v in data.items():
 ") --dry-run=client -o yaml | kubectl apply -f -
 
 # Restart pods to pick up new secrets
-kubectl rollout restart deployment/suna-api -n suna
+kubectl rollout restart deployment/nexus-api -n nexus
 ```
 
 Pods need to be restarted to pick up secret changes — K8s doesn't hot-reload env vars.
@@ -632,8 +632,8 @@ Pods need to be restarted to pick up secret changes — K8s doesn't hot-reload e
 The nodes are full. Either:
 ```bash
 # Check what's waiting
-kubectl get pods -n suna --field-selector=status.phase=Pending
-kubectl describe pod <pending-pod> -n suna  # Look at "Events" section
+kubectl get pods -n nexus --field-selector=status.phase=Pending
+kubectl describe pod <pending-pod> -n nexus  # Look at "Events" section
 
 # Check node capacity
 kubectl top nodes
@@ -648,8 +648,8 @@ kubectl logs -l app.kubernetes.io/name=cluster-autoscaler -n kube-system --tail=
 The app is crashing on startup repeatedly.
 ```bash
 # See why
-kubectl logs <pod-name> -n suna --previous
-kubectl describe pod <pod-name> -n suna
+kubectl logs <pod-name> -n nexus --previous
+kubectl describe pod <pod-name> -n nexus
 
 # Common causes:
 # - Missing env vars (secret not synced)
@@ -666,8 +666,8 @@ If you want to add headroom:
 ```bash
 # Increase the number of nodes
 aws eks update-nodegroup-config \
-  --cluster-name suna-eks \
-  --nodegroup-name suna-api-nodes \
+  --cluster-name nexus-eks \
+  --nodegroup-name nexus-api-nodes \
   --scaling-config minSize=3,maxSize=8,desiredSize=4
 ```
 
@@ -675,11 +675,11 @@ aws eks update-nodegroup-config \
 
 ```bash
 # Roll back immediately
-kubectl rollout undo deployment/suna-api -n suna
+kubectl rollout undo deployment/nexus-api -n nexus
 
 # Check what went wrong
-kubectl logs -l app.kubernetes.io/name=suna-api -n suna --tail=200
-kubectl get events -n suna --sort-by='.lastTimestamp'
+kubectl logs -l app.kubernetes.io/name=nexus-api -n nexus --tail=200
+kubectl get events -n nexus --sort-by='.lastTimestamp'
 ```
 
 ### "I need to SSH into a node"
@@ -696,10 +696,10 @@ aws ssm start-session --target <instance-id>
 ### "How do I know if it's my code or K8s?"
 
 Quick checklist:
-1. `kubectl get pods -n suna` — Are pods Running? If not, it's a K8s/infra issue.
-2. `kubectl top pods -n suna` — Is CPU/memory maxed? If yes, scale up or fix the leak.
-3. `kubectl logs <pod> -n suna` — Are there errors? If yes, it's your code.
-4. `kubectl get events -n suna` — Any K8s-level events? (OOMKilled, FailedScheduling, etc.)
+1. `kubectl get pods -n nexus` — Are pods Running? If not, it's a K8s/infra issue.
+2. `kubectl top pods -n nexus` — Is CPU/memory maxed? If yes, scale up or fix the leak.
+3. `kubectl logs <pod> -n nexus` — Are there errors? If yes, it's your code.
+4. `kubectl get events -n nexus` — Any K8s-level events? (OOMKilled, FailedScheduling, etc.)
 5. Check Better Stack logs for patterns.
 
 ---
@@ -708,15 +708,15 @@ Quick checklist:
 
 | I want to... | Command |
 |---|---|
-| See all pods | `kubectl get pods -n suna` |
-| See pod logs | `kubectl logs <pod> -n suna` |
-| See resource usage | `kubectl top pods -n suna` |
-| Restart all pods | `kubectl rollout restart deployment/suna-api -n suna` |
-| Roll back | `kubectl rollout undo deployment/suna-api -n suna` |
-| Scale pods | `kubectl scale deployment/suna-api -n suna --replicas=6` |
-| Check HPA | `kubectl get hpa -n suna` |
+| See all pods | `kubectl get pods -n nexus` |
+| See pod logs | `kubectl logs <pod> -n nexus` |
+| See resource usage | `kubectl top pods -n nexus` |
+| Restart all pods | `kubectl rollout restart deployment/nexus-api -n nexus` |
+| Roll back | `kubectl rollout undo deployment/nexus-api -n nexus` |
+| Scale pods | `kubectl scale deployment/nexus-api -n nexus --replicas=6` |
+| Check HPA | `kubectl get hpa -n nexus` |
 | Check nodes | `kubectl get nodes -o wide` |
-| See events | `kubectl get events -n suna --sort-by='.lastTimestamp'` |
-| Shell into pod | `kubectl exec -it <pod> -n suna -- /bin/bash` |
-| Check current image | `kubectl get deploy suna-api -n suna -o jsonpath='{.spec.template.spec.containers[0].image}'` |
+| See events | `kubectl get events -n nexus --sort-by='.lastTimestamp'` |
+| Shell into pod | `kubectl exec -it <pod> -n nexus -- /bin/bash` |
+| Check current image | `kubectl get deploy nexus-api -n nexus -o jsonpath='{.spec.template.spec.containers[0].image}'` |
 | Full monitoring dashboard | `bash infra/scripts/k8s-monitor.sh` |

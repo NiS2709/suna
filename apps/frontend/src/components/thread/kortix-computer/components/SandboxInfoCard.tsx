@@ -3,8 +3,8 @@
 import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Cpu, HardDrive, MemoryStick, MapPin, AlertTriangle, Loader2 } from 'lucide-react';
-import { KortixLoader } from '@/components/ui/kortix-loader';
-import { KortixLogo } from '@/components/sidebar/kortix-logo';
+import { NexusLoader } from '@/components/ui/nexus-loader';
+import { NexusLogo } from '@/components/sidebar/nexus-logo';
 import { cn } from '@/lib/utils';
 import type { SandboxState, SandboxStatus, SandboxDetails } from '@/hooks/files/use-sandbox-details';
 import { getSandboxStatusLabel } from '@/hooks/files/use-sandbox-details';
@@ -126,7 +126,7 @@ export const SandboxInfoCard = memo(function SandboxInfoCard({
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
       >
         <Card variant="glass" className="p-8 rounded-3xl gap-0">
-          <KortixLoader size="medium" />
+          <NexusLoader size="medium" />
         </Card>
       </motion.div>
     );
@@ -149,10 +149,10 @@ export const SandboxInfoCard = memo(function SandboxInfoCard({
         {/* Header with logo and status */}
         <div className="flex flex-col items-center justify-center gap-3 mb-5">
           <div className="w-16 h-16 rounded-3xl bg-background flex items-center justify-center border mx-auto">
-            <KortixLogo size={32} />
+            <NexusLogo size={32} />
           </div>
           <div className="flex flex-col items-center justify-center">
-            <h3 className="text-foreground font-semibold text-lg text-center">Kortix Computer</h3>
+            <h3 className="text-foreground font-semibold text-lg text-center">Nexus Computer</h3>
             <div className="flex items-center justify-center gap-2 mt-0.5">
               <StatusIndicator status={status} />
               <span className={cn("text-xs font-medium", getStatusColor(status))}>

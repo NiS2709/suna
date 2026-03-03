@@ -1,7 +1,7 @@
 {
-  "name": "suna-infrastructure",
+  "name": "nexus-infrastructure",
   "version": "1.0.0",
-  "description": "Suna unified infrastructure - Pulumi IaC",
+  "description": "Nexus unified infrastructure - Pulumi IaC",
   "private": true,
   "main": "index.ts",
   "scripts": {

@@ -17,7 +17,7 @@ export class EksIamRoles extends pulumi.ComponentResource {
     },
     opts?: pulumi.ComponentResourceOptions
   ) {
-    super("suna:iam:EksIamRoles", name, {}, opts);
+    super("nexus:iam:EksIamRoles", name, {}, opts);
 
     this.nodeRole = new aws.iam.Role(`${name}-node-role`, {
       name: `${config.serviceName}-eks-node-role`,
@@ -80,8 +80,8 @@ export class EksIamRoles extends pulumi.ComponentResource {
             "s3:ListBucket",
           ],
           Resource: [
-            "arn:aws:s3:::suna-*",
-            "arn:aws:s3:::suna-*/*",
+            "arn:aws:s3:::nexus-*",
+            "arn:aws:s3:::nexus-*/*",
           ],
         },
         {
@@ -159,7 +159,7 @@ export class ClusterAutoscalerIamRole extends pulumi.ComponentResource {
     },
     opts?: pulumi.ComponentResourceOptions
   ) {
-    super("suna:iam:ClusterAutoscalerIamRole", name, {}, opts);
+    super("nexus:iam:ClusterAutoscalerIamRole", name, {}, opts);
 
     const assumeRolePolicy = pulumi
       .all([config.oidcProviderArn, config.oidcProviderUrl])
@@ -253,7 +253,7 @@ export class AlbControllerIamRole extends pulumi.ComponentResource {
     },
     opts?: pulumi.ComponentResourceOptions
   ) {
-    super("suna:iam:AlbControllerIamRole", name, {}, opts);
+    super("nexus:iam:AlbControllerIamRole", name, {}, opts);
 
     const assumeRolePolicy = pulumi
       .all([config.oidcProviderArn, config.oidcProviderUrl])

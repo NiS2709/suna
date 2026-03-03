@@ -2,13 +2,13 @@
 set -euo pipefail
 
 # ============================================================================
-# Suna EKS Monitor — Terminal Dashboard
+# Nexus EKS Monitor — Terminal Dashboard
 # Usage: ./k8s-monitor.sh [namespace] [refresh_seconds]
 # ============================================================================
 
-NAMESPACE="${1:-suna}"
+NAMESPACE="${1:-nexus}"
 REFRESH="${2:-5}"
-CLUSTER="suna-eks"
+CLUSTER="nexus-eks"
 REGION="us-west-2"
 
 # ── Colors ──────────────────────────────────────────────────────────────────

@@ -12,8 +12,8 @@ import { ChevronRight } from 'lucide-react';
 import { DynamicGreeting } from '@/components/ui/dynamic-greeting';
 
 // Lazy load heavy components
-const SunaModesPanel = lazy(() => 
-  import('@/components/dashboard/suna-modes-panel').then(mod => ({ default: mod.SunaModesPanel }))
+const NexusModesPanel = lazy(() => 
+  import('@/components/dashboard/nexus-modes-panel').then(mod => ({ default: mod.NexusModesPanel }))
 );
 const AgentRunLimitBanner = lazy(() => 
   import('@/components/thread/agent-run-limit-banner').then(mod => ({ default: mod.AgentRunLimitBanner }))
@@ -88,7 +88,7 @@ export function AgentStartInput({
   modesPanelWrapperClassName,
 }: AgentStartInputProps) {
   const t = useTranslations('dashboard');
-  const tSuna = useTranslations('suna');
+  const tNexus = useTranslations('nexus');
   const tCommon = useTranslations('common');
   const tBilling = useTranslations('billing');
   
@@ -133,7 +133,7 @@ export function AgentStartInput({
     chatInputRef,
     selectedAgentId,
     setSelectedAgent,
-    isSunaAgent,
+    isNexusAgent,
     selectedMode,
     selectedCharts,
     selectedOutputFormat,
@@ -163,7 +163,7 @@ export function AgentStartInput({
     logPrefix: variant === 'hero' ? '[HeroSection]' : '[Dashboard]',
   });
   
-  const resolvedPlaceholder = placeholder || (variant === 'hero' ? tSuna('describeTask') : t('describeWhatYouNeed'));
+  const resolvedPlaceholder = placeholder || (variant === 'hero' ? tNexus('describeTask') : t('describeWhatYouNeed'));
   
   const defaultGreetingClass = variant === 'hero'
     ? "text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-medium text-balance text-center px-4 sm:px-2"
@@ -252,11 +252,11 @@ export function AgentStartInput({
         )}
       </div>
       
-      {/* Suna Modes Panel - Always show for hero variant (LP), otherwise check isSunaAgent */}
-      {showModesPanel && (variant === 'hero' || isSunaAgent) && (
+      {/* Nexus Modes Panel - Always show for hero variant (LP), otherwise check isNexusAgent */}
+      {showModesPanel && (variant === 'hero' || isNexusAgent) && (
         <div className={modesPanelWrapperClassName || "w-full animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-200 fill-mode-both"}>
           <Suspense fallback={<div className="h-24 bg-muted/10 rounded-lg animate-pulse" />}>
-            <SunaModesPanel
+            <NexusModesPanel
               selectedMode={selectedMode}
               onModeSelect={setSelectedMode}
               onSelectPrompt={setInputValue}

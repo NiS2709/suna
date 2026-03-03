@@ -1,5 +1,5 @@
-export { KortixComputer, type ToolCallInput } from './KortixComputer';
+export { NexusComputer, type ToolCallInput } from './NexusComputer';
 export { FileBrowserView } from './FileBrowserView';
 export { FileViewerView } from './FileViewerView';
-export { KortixComputerHeader } from './KortixComputerHeader';
+export { NexusComputerHeader } from './NexusComputerHeader';
 

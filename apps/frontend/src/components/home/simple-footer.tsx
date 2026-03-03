@@ -2,14 +2,14 @@
 
 import Link from 'next/link';
 import { siteConfig } from '@/lib/site-config';
-import { KortixLogo } from '@/components/sidebar/kortix-logo';
+import { NexusLogo } from '@/components/sidebar/nexus-logo';
 import { LocaleSwitcher } from '@/components/home/locale-switcher';
 import { ThemeToggle } from '@/components/home/theme-toggle';
 import { useGitHubStars } from '@/hooks/utils';
 
 export function SimpleFooter() {
   const currentYear = new Date().getFullYear();
-  const { formattedStars, loading: starsLoading } = useGitHubStars('kortix-ai', 'suna');
+  const { formattedStars, loading: starsLoading } = useGitHubStars('NiS2709', 'nexus');
 
   return (
     <footer className="w-full bg-background/50 backdrop-blur-sm">
@@ -21,16 +21,16 @@ export function SimpleFooter() {
             <Link href="/" className="inline-flex items-center gap-2 group">
               {/* Wordmark on mobile, symbol on desktop */}
               <span className="md:hidden">
-                <KortixLogo size={18} variant="logomark" />
+                <NexusLogo size={18} variant="logomark" />
               </span>
               <span className="hidden md:block">
-                <KortixLogo size={24} variant="symbol" />
+                <NexusLogo size={24} variant="symbol" />
               </span>
             </Link>
             {/* Social links */}
             <div className="flex items-center gap-3 pt-2">
               <a
-                href="https://github.com/kortix-ai/suna"
+                href="https://github.com/NiS2709/nexus"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"
@@ -69,7 +69,7 @@ export function SimpleFooter() {
                 </svg>
               </a>
               <a
-                href="https://x.com/kortix"
+                href="https://x.com/nexus"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="X (Twitter)"
@@ -87,7 +87,7 @@ export function SimpleFooter() {
                 </svg>
               </a>
               <a
-                href="https://www.linkedin.com/company/kortix/"
+                href="https://www.linkedin.com/company/nexus/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
@@ -144,7 +144,7 @@ export function SimpleFooter() {
         <div className="mt-12 pt-8 border-t border-border/40">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © {currentYear} Kortix. All rights reserved.
+              © {currentYear} Nexus. All rights reserved.
             </p>
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
               <span>Built with</span>

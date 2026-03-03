@@ -19,8 +19,8 @@ export const EmptyState = memo(function EmptyState({ t }: EmptyStateProps) {
           
           {/* Logo - dark mode (white logo) */}
           <Image
-            src="/kortix-computer-white.svg"
-            alt="Kortix Computer"
+            src="/nexus-computer-white.svg"
+            alt="Nexus Computer"
             width={240}
             height={27}
             className="hidden dark:block relative z-10 "
@@ -29,8 +29,8 @@ export const EmptyState = memo(function EmptyState({ t }: EmptyStateProps) {
           
           {/* Logo - light mode (black logo) */}
           <Image
-            src="/kortix-computer-black.svg"
-            alt="Kortix Computer"
+            src="/nexus-computer-black.svg"
+            alt="Nexus Computer"
             width={240}
             height={27}
             className="block dark:hidden relative z-10"

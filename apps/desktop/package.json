@@ -1,11 +1,11 @@
 {
-  "name": "kortix-desktop",
+  "name": "nexus-desktop",
   "version": "1.0.0",
-  "description": "Kortix Desktop",
+  "description": "Nexus Desktop",
   "author": {
-    "name": "Kortix",
-    "email": "support@kortix.com",
-    "url": "https://kortix.com"
+    "name": "Nexus",
+    "email": "support@nexus.com",
+    "url": "https://nexus.com"
   },
   "main": "main.js",
   "scripts": {
@@ -24,11 +24,11 @@
     "electron-builder": "^25.1.8"
   },
   "build": {
-    "appId": "com.kortix.desktop",
-    "productName": "Kortix",
+    "appId": "com.nexus.desktop",
+    "productName": "Nexus",
     "protocols": {
-      "name": "Kortix",
-      "schemes": ["kortix"]
+      "name": "Nexus",
+      "schemes": ["nexus"]
     },
     "mac": {
       "target": "dmg",

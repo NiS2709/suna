@@ -108,12 +108,12 @@ class TriggerTool(AgentBuilderBaseTool):
                 if explicit_defaults:
                     target_worker = explicit_defaults[0]
                 else:
-                    suna_defaults = [
+                    nexus_defaults = [
                         worker for worker in workers
-                        if isinstance(worker.get('metadata'), dict) and worker['metadata'].get('is_suna_default') is True
+                        if isinstance(worker.get('metadata'), dict) and worker['metadata'].get('is_nexus_default') is True
                     ]
-                    if suna_defaults:
-                        target_worker = suna_defaults[0]
+                    if nexus_defaults:
+                        target_worker = nexus_defaults[0]
 
             if not target_worker:
                 for worker in workers:
@@ -214,9 +214,9 @@ class TriggerTool(AgentBuilderBaseTool):
                         "type": "string",
                         "description": "Optional search text to filter workers by name"
                     },
-                    "include_kortix": {
+                    "include_nexus": {
                         "type": "boolean",
-                        "description": "Whether to include the built-in Kortix worker in results. Defaults to false."
+                        "description": "Whether to include the built-in Nexus worker in results. Defaults to false."
                     }
                 },
                 "required": []
@@ -226,7 +226,7 @@ class TriggerTool(AgentBuilderBaseTool):
     async def list_account_workers(
         self,
         search: Optional[str] = None,
-        include_kortix: bool = False,
+        include_nexus: bool = False,
     ) -> ToolResult:
         try:
             workers = await self._get_account_workers()
@@ -237,10 +237,10 @@ class TriggerTool(AgentBuilderBaseTool):
             for worker in workers:
                 raw_metadata = worker.get('metadata')
                 metadata: Dict[str, Any] = raw_metadata if isinstance(raw_metadata, dict) else {}
-                is_kortix = bool(metadata.get('is_suna_default'))
+                is_nexus = bool(metadata.get('is_nexus_default'))
                 name = worker.get('name') or 'Untitled Worker'
 
-                if not include_kortix and is_kortix:
+                if not include_nexus and is_nexus:
                     continue
                 if search_text and search_text not in name.lower():
                     continue
@@ -249,7 +249,7 @@ class TriggerTool(AgentBuilderBaseTool):
                     "agent_id": worker.get('agent_id'),
                     "name": name,
                     "is_default": bool(worker.get('is_default')),
-                    "is_kortix": is_kortix,
+                    "is_nexus": is_nexus,
                     "is_current": str(worker.get('agent_id')) == str(self.agent_id),
                     "created_at": worker.get('created_at'),
                     "updated_at": worker.get('updated_at'),
@@ -309,7 +309,7 @@ class TriggerTool(AgentBuilderBaseTool):
                     },
                     "model": {
                         "type": "string",
-                        "description": "Model to use for the scheduled execution. Options: 'kortix/basic' (default, free tier) or 'kortix/power' (requires paid subscription). If not specified, defaults to 'kortix/basic'."
+                        "description": "Model to use for the scheduled execution. Options: 'nexus/basic' (default, free tier) or 'nexus/power' (requires paid subscription). If not specified, defaults to 'nexus/basic'."
                     }
                 },
                 "required": ["name", "cron_expression", "agent_prompt"]
@@ -345,7 +345,7 @@ class TriggerTool(AgentBuilderBaseTool):
                 "cron_expression": cron_expression,
                 "provider_id": "schedule",
                 "agent_prompt": agent_prompt,
-                "model": model or "kortix/basic"
+                "model": model or "nexus/basic"
             }
             
             if variables:
@@ -438,7 +438,7 @@ class TriggerTool(AgentBuilderBaseTool):
                     "description": trigger.description,
                     "cron_expression": trigger.config.get("cron_expression"),
                     "agent_prompt": trigger.config.get("agent_prompt"),
-                    "model": trigger.config.get("model", "kortix/basic"),
+                    "model": trigger.config.get("model", "nexus/basic"),
                     "is_active": trigger.is_active
                 }
                 
@@ -647,7 +647,7 @@ class TriggerTool(AgentBuilderBaseTool):
                     "name": {"type": "string", "description": "Optional friendly name for the trigger"},
                     "agent_prompt": {"type": "string", "description": "Prompt to pass to the agent when triggered. Can include variables like {{variable_name}} that will be replaced when users install the template. For example: 'New email received for {{company_name}}...'"},
                     "connected_account_id": {"type": "string", "description": "Optional Composio connected account id (format: ca_...). If omitted, it is auto-derived from profile_id when possible. Do not pass profile UUID here."},
-                    "model": {"type": "string", "description": "Model to use for the event execution. Options: 'kortix/basic' (default, free tier) or 'kortix/power' (requires paid subscription). If not specified, defaults to 'kortix/basic'."}
+                    "model": {"type": "string", "description": "Model to use for the event execution. Options: 'nexus/basic' (default, free tier) or 'nexus/power' (requires paid subscription). If not specified, defaults to 'nexus/basic'."}
                 },
                 "required": ["slug", "profile_id", "agent_prompt"]
             }
@@ -829,8 +829,8 @@ class TriggerTool(AgentBuilderBaseTool):
             if not composio_trigger_id:
                 return self.fail_response("Failed to get Composio trigger id from response")
             
-            # Build Suna trigger config (same as API)
-            suna_config: Dict[str, Any] = {
+            # Build Nexus trigger config (same as API)
+            nexus_config: Dict[str, Any] = {
                 "provider_id": "composio",
                 "composio_trigger_id": composio_trigger_id,
                 "trigger_slug": slug,
@@ -838,26 +838,26 @@ class TriggerTool(AgentBuilderBaseTool):
                 "profile_id": resolved_profile_id,
                 "connected_account_id": resolved_connected_account_id,
                 "agent_prompt": agent_prompt,
-                "model": model or "kortix/basic"
+                "model": model or "nexus/basic"
             }
             
             if variables:
-                suna_config["trigger_variables"] = variables
+                nexus_config["trigger_variables"] = variables
                 logger.debug(f"Found variables in event trigger prompt: {variables}")
             
-            # Create Suna trigger
+            # Create Nexus trigger
             trigger_svc = get_trigger_service(self.db)
             try:
                 trigger = await trigger_svc.create_trigger(
                     agent_id=target_agent_id,
                     provider_id="composio",
                     name=name or slug,
-                    config=suna_config,
+                    config=nexus_config,
                     description=f"{slug}"
                 )
             except Exception as e:
-                logger.error(f"Failed to create Suna trigger: {e}")
-                return self.fail_response(f"Failed to create Suna trigger: {str(e)}")
+                logger.error(f"Failed to create Nexus trigger: {e}")
+                return self.fail_response(f"Failed to create Nexus trigger: {str(e)}")
 
             # Sync triggers to version config
             try:
@@ -868,7 +868,7 @@ class TriggerTool(AgentBuilderBaseTool):
             message = f"Event trigger '{trigger.name}' created successfully.\n"
             message += f"**Worker**: {target_worker_name}\n"
             message += f"**Profile ID**: {resolved_profile_id}\n"
-            message += f"**Model**: {suna_config['model']}\n"
+            message += f"**Model**: {nexus_config['model']}\n"
             message += "Worker execution configured."
             if variables:
                 message += f"\n**Template Variables Detected**: {', '.join(['{{' + v + '}}' for v in variables])}\n"
@@ -883,7 +883,7 @@ class TriggerTool(AgentBuilderBaseTool):
                     "worker_name": target_worker_name,
                     "profile_id": resolved_profile_id,
                     "connected_account_id": resolved_connected_account_id,
-                    "model": suna_config['model'],
+                    "model": nexus_config['model'],
                     "is_active": trigger.is_active,
                     "variables": variables if variables else []
                 }

@@ -110,10 +110,10 @@ export function BillingPage({ visible, onClose, onChangePlan }: BillingPageProps
   const handleCreditsExplained = useCallback(async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     try {
-      // Use kortix.com for production, staging.kortix.com for staging
+      // Use nexus.com for production, staging.nexus.com for staging
       const baseUrl = process.env.EXPO_PUBLIC_ENV === 'staging'
-        ? 'https://staging.kortix.com'
-        : 'https://www.kortix.com';
+        ? 'https://staging.nexus.com'
+        : 'https://www.nexus.com';
       await WebBrowser.openBrowserAsync(`${baseUrl}/credits-explained`, {
         presentationStyle: WebBrowser.WebBrowserPresentationStyle.PAGE_SHEET,
       });

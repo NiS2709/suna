@@ -47,15 +47,15 @@ export function InstructionsScreen({ agentId, onUpdate }: InstructionsScreenProp
   const handleSave = async () => {
     if (!hasChanges) return;
 
-    const isSunaAgent = agent?.metadata?.is_suna_default || false;
+    const isNexusAgent = agent?.metadata?.is_nexus_default || false;
     const restrictions = agent?.metadata?.restrictions || {};
-    const isEditable = restrictions.system_prompt_editable !== false && !isSunaAgent;
+    const isEditable = restrictions.system_prompt_editable !== false && !isNexusAgent;
 
     if (!isEditable) {
-      if (isSunaAgent) {
+      if (isNexusAgent) {
         Alert.alert(
           t('workers.instructions.cannotEditAlert'),
-          t('workers.instructions.sunaManaged')
+          t('workers.instructions.nexusManaged')
         );
       }
       return;
@@ -88,9 +88,9 @@ export function InstructionsScreen({ agentId, onUpdate }: InstructionsScreenProp
     );
   }
 
-  const isSunaAgent = agent?.metadata?.is_suna_default || false;
+  const isNexusAgent = agent?.metadata?.is_nexus_default || false;
   const restrictions = agent?.metadata?.restrictions || {};
-  const isEditable = restrictions.system_prompt_editable !== false && !isSunaAgent;
+  const isEditable = restrictions.system_prompt_editable !== false && !isNexusAgent;
 
   return (
     <View className="flex-1" style={{ flex: 1, position: 'relative' }}>
@@ -111,8 +111,8 @@ export function InstructionsScreen({ agentId, onUpdate }: InstructionsScreenProp
               className="mt-0.5 text-yellow-600 dark:text-yellow-400"
             />
             <Text className="flex-1 font-roobert text-sm text-yellow-600 dark:text-yellow-400">
-              {isSunaAgent
-                ? t('workers.instructions.cannotEditSuna')
+              {isNexusAgent
+                ? t('workers.instructions.cannotEditNexus')
                 : t('workers.instructions.cannotEdit')}
             </Text>
           </View>

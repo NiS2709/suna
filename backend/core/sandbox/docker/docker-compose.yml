@@ -1,5 +1,5 @@
 services:
-  kortix-suna:
+  nexus-nexus:
     platform: linux/amd64
     build:
       context: .

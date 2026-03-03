@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { FileText, Download, CheckCircle2, AlertCircle } from 'lucide-react';
-import { KortixLoader } from '@/components/ui/kortix-loader';
+import { NexusLoader } from '@/components/ui/nexus-loader';
 import { ToolViewProps } from '../types';
 import { formatTimestamp } from '../utils';
 import { toast } from '@/lib/toast';
@@ -175,8 +175,8 @@ export function PdfExportToolView({
             >
               {isDownloading ? (
                 <>
-                  <KortixLoader customSize={16} variant="white" className="mr-2 dark:hidden" />
-                  <KortixLoader customSize={16} variant="black" className="mr-2 hidden dark:flex" />
+                  <NexusLoader customSize={16} variant="white" className="mr-2 dark:hidden" />
+                  <NexusLoader customSize={16} variant="black" className="mr-2 hidden dark:flex" />
                   <span>Downloading...</span>
                 </>
               ) : (

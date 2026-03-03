@@ -4,9 +4,9 @@
 
 | Environment | Git Branch | Frontend | Backend API |
 |-------------|------------|----------|-------------|
-| **DEV** | `main` | dev.kortix.com | dev-api.kortix.com |
-| **STAGING** | `staging` | staging.kortix.com | staging-api.kortix.com |
-| **PRODUCTION** | `PRODUCTION` | kortix.com | api.kortix.com |
+| **DEV** | `main` | dev.nexus.com | dev-api.nexus.com |
+| **STAGING** | `staging` | staging.nexus.com | staging-api.nexus.com |
+| **PRODUCTION** | `PRODUCTION` | nexus.com | api.nexus.com |
 
 ## Databases (Supabase)
 

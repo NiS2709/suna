@@ -154,12 +154,12 @@ export async function startUnifiedCreditPurchase(
     
     if (!packageIdentifier) {
       const creditPackageMap: Record<number, string> = {
-        10: 'kortix_topup_starter',
-        25: 'kortix_topup_plus',
-        50: 'kortix_topup_popular',
-        100: 'kortix_topup_pro',
-        250: 'kortix_topup_business',
-        500: 'kortix_topup_enterprise',
+        10: 'nexus_topup_starter',
+        25: 'nexus_topup_plus',
+        50: 'nexus_topup_popular',
+        100: 'nexus_topup_pro',
+        250: 'nexus_topup_business',
+        500: 'nexus_topup_enterprise',
       };
       packageIdentifier = creditPackageMap[amount];
     }

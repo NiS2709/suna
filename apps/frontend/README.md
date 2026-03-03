@@ -1,4 +1,4 @@
-# Kortix Frontend
+# Nexus Frontend
 
 ## Quick Setup
 

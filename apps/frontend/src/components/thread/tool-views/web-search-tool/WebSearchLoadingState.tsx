@@ -24,7 +24,7 @@ import {
   type LucideIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { KortixLoader } from '@/components/ui/kortix-loader';
+import { NexusLoader } from '@/components/ui/nexus-loader';
 
 interface QueryStyle {
   icon: LucideIcon;
@@ -335,8 +335,8 @@ export function WebSearchLoadingState({
                     {query}
                   </span>
 
-                  {/* Kortix loading animation */}
-                  <KortixLoader customSize={16} />
+                  {/* Nexus loading animation */}
+                  <NexusLoader customSize={16} />
                 </motion.div>
               );
             })}

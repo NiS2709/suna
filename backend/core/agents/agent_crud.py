@@ -48,47 +48,47 @@ async def update_agent(
         existing_data = existing_agent_data
 
         agent_metadata = existing_data.get('metadata', {})
-        is_suna_agent = agent_metadata.get('is_suna_default', False)
+        is_nexus_agent = agent_metadata.get('is_nexus_default', False)
         restrictions = agent_metadata.get('restrictions', {})
         
-        if is_suna_agent:
-            logger.warning(f"Update attempt on Suna default agent {agent_id} by user {user_id}")
+        if is_nexus_agent:
+            logger.warning(f"Update attempt on Nexus default agent {agent_id} by user {user_id}")
             
             if (agent_data.name is not None and 
                 agent_data.name != existing_data.get('name') and 
                 restrictions.get('name_editable') == False):
-                logger.error(f"User {user_id} attempted to modify restricted name of Suna agent {agent_id}")
+                logger.error(f"User {user_id} attempted to modify restricted name of Nexus agent {agent_id}")
                 raise HTTPException(
                     status_code=403, 
-                    detail="Suna's name cannot be modified. This restriction is managed centrally."
+                    detail="Nexus's name cannot be modified. This restriction is managed centrally."
                 )
             
             
             if (agent_data.system_prompt is not None and 
                 restrictions.get('system_prompt_editable') == False):
-                logger.error(f"User {user_id} attempted to modify restricted system prompt of Suna agent {agent_id}")
+                logger.error(f"User {user_id} attempted to modify restricted system prompt of Nexus agent {agent_id}")
                 raise HTTPException(
                     status_code=403, 
-                    detail="Suna's system prompt cannot be modified. This is managed centrally to ensure optimal performance."
+                    detail="Nexus's system prompt cannot be modified. This is managed centrally to ensure optimal performance."
                 )
             
             if (agent_data.agentpress_tools is not None and 
                 restrictions.get('tools_editable') == False):
-                logger.error(f"User {user_id} attempted to modify restricted tools of Suna agent {agent_id}")
+                logger.error(f"User {user_id} attempted to modify restricted tools of Nexus agent {agent_id}")
                 raise HTTPException(
                     status_code=403, 
-                    detail="Suna's default tools cannot be modified. These tools are optimized for Suna's capabilities."
+                    detail="Nexus's default tools cannot be modified. These tools are optimized for Nexus's capabilities."
                 )
             
             if ((agent_data.configured_mcps is not None or agent_data.custom_mcps is not None) and 
                 restrictions.get('mcps_editable') == False):
-                logger.error(f"User {user_id} attempted to modify restricted MCPs of Suna agent {agent_id}")
+                logger.error(f"User {user_id} attempted to modify restricted MCPs of Nexus agent {agent_id}")
                 raise HTTPException(
                     status_code=403, 
-                    detail="Suna's integrations cannot be modified."
+                    detail="Nexus's integrations cannot be modified."
                 )
             
-            logger.debug(f"Suna agent update validation passed for agent {agent_id} by user {user_id}")
+            logger.debug(f"Nexus agent update validation passed for agent {agent_id} by user {user_id}")
 
         current_version_data = None
         if existing_data.get('current_version_id'):
@@ -406,8 +406,8 @@ async def delete_agent(agent_id: str, user_id: str = Depends(verify_and_get_user
         if agent['is_default']:
             raise HTTPException(status_code=400, detail="Cannot delete default agent")
         
-        if agent.get('metadata', {}).get('is_suna_default', False):
-            raise HTTPException(status_code=400, detail="Cannot delete Suna default agent")
+        if agent.get('metadata', {}).get('is_nexus_default', False):
+            raise HTTPException(status_code=400, detail="Cannot delete Nexus default agent")
         
         # Clean up triggers before deleting agent
         try:
@@ -596,11 +596,11 @@ async def create_agent(
         
         try:
             version_service = await _get_version_service()
-            from core.config.suna_config import SUNA_CONFIG
+            from core.config.nexus_config import NEXUS_CONFIG
             from core.config.config_helper import _get_default_agentpress_tools
             from core.ai_models import model_manager
             
-            system_prompt = SUNA_CONFIG["system_prompt"]
+            system_prompt = NEXUS_CONFIG["system_prompt"]
             
             agentpress_tools = agent_data.agentpress_tools if agent_data.agentpress_tools else _get_default_agentpress_tools()
             agentpress_tools = ensure_core_tools_enabled(agentpress_tools)

@@ -1,6 +1,6 @@
-# Suna Infrastructure
+# Nexus Infrastructure
 
-Pulumi Infrastructure-as-Code for Suna
+Pulumi Infrastructure-as-Code for Nexus
 
 ## Architecture
 
@@ -8,21 +8,21 @@ Pulumi Infrastructure-as-Code for Suna
                     ┌─────────────────────────────────────────────────────────┐
                     │                    CLOUDFLARE                            │
                     │                                                          │
-                    │   api.kortix.com ──► Worker (api-kortix-router)          │
+                    │   api.nexus.com ──► Worker (api-nexus-router)          │
                     │                          │                               │
                     │         ┌────────────────┴────────────────┐              │
                     │         ▼                                 ▼              │
                     │   ACTIVE_BACKEND=lightsail          (future: ecs)        │
                     │         │                                 │              │
                     │         ▼                                 ▼              │
-                    │   api-lightsail.kortix.com         api-ecs.kortix.com    │
+                    │   api-lightsail.nexus.com         api-ecs.nexus.com    │
                     │   (Tunnel)                         (Direct to ALB)       │
                     └─────────┬─────────────────────────────────┬──────────────┘
                               │                                 │
                               ▼                                 ▼
 ┌─────────────────────────────────────────┐    ┌───────────────────────────────────┐
 │         LIGHTSAIL (Prod)                │    │           ECS (Prod)              │
-│   Cloudflared → localhost:8000          │    │   Cluster: suna-ecs               │
+│   Cloudflared → localhost:8000          │    │   Cluster: nexus-ecs               │
 │                                         │    │   Fargate + Fargate Spot          │
 └─────────────────────────────────────────┘    │   Auto-scaling (CPU/Memory)       │
                                                │   ALB → Target Group → Tasks      │
@@ -199,5 +199,5 @@ pulumi stack output
 pulumi destroy
 
 # Import existing resource
-pulumi import aws:ecs/cluster:Cluster suna-ecs arn:aws:ecs:...
+pulumi import aws:ecs/cluster:Cluster nexus-ecs arn:aws:ecs:...
 ```

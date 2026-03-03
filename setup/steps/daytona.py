@@ -26,7 +26,7 @@ class DaytonaStep(BaseStep):
             )
         else:
             self.info(
-                "Kortix Suna REQUIRES Daytona for sandboxing functionality. "
+                "Nexus REQUIRES Daytona for sandboxing functionality. "
                 "Without this key, sandbox features will fail."
             )
             self.prompts.press_enter_to_continue(
@@ -74,7 +74,7 @@ class DaytonaStep(BaseStep):
 
         # Show important note about snapshot
         self.warning(
-            "IMPORTANT: You must create a Kortix Suna snapshot in Daytona for it to work properly."
+            "IMPORTANT: You must create a Nexus snapshot in Daytona for it to work properly."
         )
         self.info("Visit https://app.daytona.io/dashboard/snapshots to create a snapshot.")
         self.info("Create a snapshot with these exact settings:")

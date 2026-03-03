@@ -93,12 +93,12 @@ export function isAndroidTablet(): boolean {
  * Store links for mobile app downloads
  */
 export const MOBILE_APP_STORE_LINKS = {
-  ios: 'https://apps.apple.com/ie/app/kortix/id6754448524',
-  android: 'https://play.google.com/store/apps/details?id=com.kortix.app',
+  ios: 'https://apps.apple.com/ie/app/nexus/id6754448524',
+  android: 'https://play.google.com/store/apps/details?id=com.nexus.app',
 } as const;
 
 /**
- * Deep link scheme for opening the Kortix app
+ * Deep link scheme for opening the Nexus app
  */
-export const KORTIX_DEEP_LINK = 'kortix://';
+export const NEXUS_DEEP_LINK = 'nexus://';
 

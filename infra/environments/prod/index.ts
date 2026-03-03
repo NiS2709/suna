@@ -2,7 +2,7 @@ import * as pulumi from "@pulumi/pulumi";
 
 import { COMMON_TAGS } from "../../modules/constants";
 import {
-  SunaEksCluster,
+  NexusEksCluster,
   ApiWorkload,
   ClusterAutoscaler,
   EksIamRoles,
@@ -24,7 +24,7 @@ const networkConfig = {
 };
 
 const serviceConfig = {
-  name: config.get("serviceName") || "suna-api",
+  name: config.get("serviceName") || "nexus-api",
   containerImage: config.require("containerImage"),
   containerPort: config.getNumber("containerPort") || 8000,
   healthCheckPath: config.get("healthCheckPath") || "/v1/health-docker",
@@ -59,16 +59,16 @@ const secretsManagerArn = config.requireSecret("secretsManagerArn");
 const cloudflareTunnelId = config.requireSecret("cloudflareTunnelId");
 
 
-const iamRoles = new EksIamRoles("suna-eks-iam", {
+const iamRoles = new EksIamRoles("nexus-eks-iam", {
   serviceName: serviceConfig.name,
   secretsArn: secretsManagerArn,
   tags: COMMON_TAGS,
 });
 
-const eksClusterName = "suna-eks";
-const namespace = "suna";
+const eksClusterName = "nexus-eks";
+const namespace = "nexus";
 
-const eksCluster = new SunaEksCluster("suna-eks", {
+const eksCluster = new NexusEksCluster("nexus-eks", {
   name: eksClusterName,
   environment,
   version: eksConfig.version,
@@ -79,7 +79,7 @@ const eksCluster = new SunaEksCluster("suna-eks", {
   instanceProfile: iamRoles.nodeInstanceProfile,
   tags: COMMON_TAGS,
   apiNodeGroup: {
-    name: "suna-api-nodes",
+    name: "nexus-api-nodes",
     instanceTypes: [eksConfig.apiNodeInstanceType],
     capacityType: "ON_DEMAND",
     scalingConfig: {
@@ -96,7 +96,7 @@ const eksCluster = new SunaEksCluster("suna-eks", {
   },
 });
 
-const albControllerRole = new AlbControllerIamRole("suna-alb-controller", {
+const albControllerRole = new AlbControllerIamRole("nexus-alb-controller", {
   clusterName: eksClusterName,
   oidcProviderArn: eksCluster.oidcProviderArn,
   oidcProviderUrl: eksCluster.oidcProviderUrl,
@@ -105,7 +105,7 @@ const albControllerRole = new AlbControllerIamRole("suna-alb-controller", {
   tags: COMMON_TAGS,
 });
 
-const clusterAutoscalerRole = new ClusterAutoscalerIamRole("suna-cas", {
+const clusterAutoscalerRole = new ClusterAutoscalerIamRole("nexus-cas", {
   clusterName: eksClusterName,
   oidcProviderArn: eksCluster.oidcProviderArn,
   oidcProviderUrl: eksCluster.oidcProviderUrl,
@@ -114,7 +114,7 @@ const clusterAutoscalerRole = new ClusterAutoscalerIamRole("suna-cas", {
   tags: COMMON_TAGS,
 });
 
-const clusterAutoscaler = new ClusterAutoscaler("suna-cas", {
+const clusterAutoscaler = new ClusterAutoscaler("nexus-cas", {
   clusterName: eksClusterName,
   namespace: "kube-system",
   serviceAccountName: "cluster-autoscaler",
@@ -122,7 +122,7 @@ const clusterAutoscaler = new ClusterAutoscaler("suna-cas", {
   region,
 }, eksCluster.k8sProvider);
 
-const apiWorkload = new ApiWorkload("suna-api", {
+const apiWorkload = new ApiWorkload("nexus-api", {
   name: serviceConfig.name,
   namespace,
   image: serviceConfig.containerImage,
@@ -131,7 +131,7 @@ const apiWorkload = new ApiWorkload("suna-api", {
   cpu: { request: podConfig.cpuRequest, limit: podConfig.cpuLimit },
   memory: { request: podConfig.memoryRequest, limit: podConfig.memoryLimit },
   healthCheckPath: serviceConfig.healthCheckPath,
-  envSecretName: "suna-env",
+  envSecretName: "nexus-env",
   secretsArn: secretsManagerArn,
   workersPerPod: podConfig.workersPerPod,
   hpa: {
@@ -141,7 +141,7 @@ const apiWorkload = new ApiWorkload("suna-api", {
   },
   ingress: {
     enabled: true,
-    host: config.get("primaryDomain") || "api-eks.kortix.com",
+    host: config.get("primaryDomain") || "api-eks.nexus.com",
     annotations: {
       "alb.ingress.kubernetes.io/certificate-arn": config.get("acmCertificateArn") || "",
       "alb.ingress.kubernetes.io/subnets": networkConfig.publicSubnets.join(","),
@@ -150,7 +150,7 @@ const apiWorkload = new ApiWorkload("suna-api", {
   tags: COMMON_TAGS,
 }, eksCluster.k8sProvider);
 
-const monitoring = new EksMonitoring("suna-api-monitoring", {
+const monitoring = new EksMonitoring("nexus-api-monitoring", {
   clusterName: eksClusterName,
   deploymentName: serviceConfig.name,
   namespace,
@@ -200,7 +200,7 @@ export const outputs = {
   },
 
   endpoints: {
-    primary: config.get("primaryDomain") || "api-eks.kortix.com",
-    lightsail: config.get("lightsailDomain") || "api-lightsail.kortix.com",
+    primary: config.get("primaryDomain") || "api-eks.nexus.com",
+    lightsail: config.get("lightsailDomain") || "api-lightsail.nexus.com",
   },
 };

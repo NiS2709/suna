@@ -100,9 +100,9 @@ async def lifespan(app: FastAPI):
         from core.utils.tool_discovery import warm_up_tools_cache
         warm_up_tools_cache()
         
-        # Pre-load static Suna config for fast path in API requests
-        from core.cache.runtime_cache import load_static_suna_config
-        load_static_suna_config()
+        # Pre-load static Nexus config for fast path in API requests
+        from core.cache.runtime_cache import load_static_nexus_config
+        load_static_nexus_config()
         
         sandbox_api.initialize(db)
         
@@ -329,14 +329,14 @@ async def log_requests_middleware(request: Request, call_next):
 
 # Define allowed origins based on environment
 allowed_origins = [
-    "https://www.kortix.com",
-    "https://kortix.com",
-    "https://dev.kortix.com",
-    "https://staging.kortix.com",
-    "https://prod-test.kortix.com",
+    "https://www.nexus.com",
+    "https://nexus.com",
+    "https://dev.nexus.com",
+    "https://staging.nexus.com",
+    "https://prod-test.nexus.com",
 ]
-# Allow all *.kortix.com subdomains and Vercel preview deployments
-allow_origin_regex = r"https://([a-z0-9-]+\.)?kortix\.com|https://.*-kortixai\.vercel\.app"
+# Allow all *.nexus.com subdomains and Vercel preview deployments
+allow_origin_regex = r"https://([a-z0-9-]+\.)?nexus\.com|https://.*-nexusai\.vercel\.app"
 
 # Add local origins for development
 if config.ENV_MODE == EnvMode.LOCAL:
@@ -345,7 +345,7 @@ if config.ENV_MODE == EnvMode.LOCAL:
 
 # Add staging-specific origins
 if config.ENV_MODE == EnvMode.STAGING:
-    allowed_origins.append("https://staging.kortix.com")
+    allowed_origins.append("https://staging.nexus.com")
     allowed_origins.append("http://localhost:3000")
 
 app.add_middleware(

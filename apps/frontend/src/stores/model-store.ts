@@ -16,7 +16,7 @@ export const useModelStore = create<ModelStore>()(
       },
     }),
     {
-      name: 'suna-model-selection-v3',
+      name: 'nexus-model-selection-v3',
       partialize: (state) => ({
         selectedModel: state.selectedModel,
       }),

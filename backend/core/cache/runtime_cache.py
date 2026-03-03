@@ -23,27 +23,27 @@ def _json_loads(value: Union[str, bytes]) -> Any:
         return json.loads(value.decode('utf-8'))
     return json.loads(value)
 
-_SUNA_STATIC_CONFIG: Optional[Dict[str, Any]] = None
-_SUNA_STATIC_LOADED = False
+_NEXUS_STATIC_CONFIG: Optional[Dict[str, Any]] = None
+_NEXUS_STATIC_LOADED = False
 
-def get_static_suna_config() -> Optional[Dict[str, Any]]:
-    return _SUNA_STATIC_CONFIG
+def get_static_nexus_config() -> Optional[Dict[str, Any]]:
+    return _NEXUS_STATIC_CONFIG
 
-def load_static_suna_config() -> Dict[str, Any]:
-    global _SUNA_STATIC_CONFIG, _SUNA_STATIC_LOADED
+def load_static_nexus_config() -> Dict[str, Any]:
+    global _NEXUS_STATIC_CONFIG, _NEXUS_STATIC_LOADED
     
-    if _SUNA_STATIC_LOADED:
-        return _SUNA_STATIC_CONFIG
+    if _NEXUS_STATIC_LOADED:
+        return _NEXUS_STATIC_CONFIG
     
-    from core.config.suna_config import SUNA_CONFIG
+    from core.config.nexus_config import NEXUS_CONFIG
     from core.config.config_helper import _extract_agentpress_tools_for_run
     
-    _SUNA_STATIC_CONFIG = {
-        'system_prompt': SUNA_CONFIG['system_prompt'],
-        'model': SUNA_CONFIG['model'],
-        'agentpress_tools': _extract_agentpress_tools_for_run(SUNA_CONFIG['agentpress_tools']),
+    _NEXUS_STATIC_CONFIG = {
+        'system_prompt': NEXUS_CONFIG['system_prompt'],
+        'model': NEXUS_CONFIG['model'],
+        'agentpress_tools': _extract_agentpress_tools_for_run(NEXUS_CONFIG['agentpress_tools']),
         'centrally_managed': True,
-        'is_suna_default': True,
+        'is_nexus_default': True,
         'restrictions': {
             'system_prompt_editable': False,
             'tools_editable': False,
@@ -53,9 +53,9 @@ def load_static_suna_config() -> Dict[str, Any]:
         }
     }
     
-    _SUNA_STATIC_LOADED = True
-    logger.info(f"✅ Loaded static Suna config into memory (prompt: {len(_SUNA_STATIC_CONFIG['system_prompt'])} chars)")
-    return _SUNA_STATIC_CONFIG
+    _NEXUS_STATIC_LOADED = True
+    logger.info(f"✅ Loaded static Nexus config into memory (prompt: {len(_NEXUS_STATIC_CONFIG['system_prompt'])} chars)")
+    return _NEXUS_STATIC_CONFIG
 
 AGENT_CONFIG_TTL = 3600
 
@@ -175,11 +175,11 @@ async def set_cached_agent_config(
     agent_id: str,
     config: Dict[str, Any],
     version_id: Optional[str] = None,
-    is_suna_default: bool = False
+    is_nexus_default: bool = False
 ) -> None:
-    await set_cached_agent_type(agent_id, is_suna_default)
+    await set_cached_agent_type(agent_id, is_nexus_default)
     
-    if is_suna_default:
+    if is_nexus_default:
         await set_cached_user_mcps(
             agent_id,
             config.get('configured_mcps', []),
@@ -212,11 +212,11 @@ async def get_cached_agent_type(agent_id: str) -> Optional[str]:
     return None
 
 
-async def set_cached_agent_type(agent_id: str, is_suna: bool) -> None:
+async def set_cached_agent_type(agent_id: str, is_nexus: bool) -> None:
     cache_key = _get_agent_type_key(agent_id)
     try:
         from core.services import redis as redis_service
-        await redis_service.set(cache_key, "suna" if is_suna else "custom", ex=AGENT_CONFIG_TTL)
+        await redis_service.set(cache_key, "nexus" if is_nexus else "custom", ex=AGENT_CONFIG_TTL)
     except Exception as e:
         logger.warning(f"Failed to cache agent type: {e}")
 
@@ -236,12 +236,12 @@ async def invalidate_agent_config_cache(agent_id: str) -> None:
         logger.warning(f"Failed to invalidate cache: {e}")
 
 
-async def warm_up_suna_config_cache() -> None:
+async def warm_up_nexus_config_cache() -> None:
     t_start = time.time()
-    load_static_suna_config()
+    load_static_nexus_config()
     
     elapsed = (time.time() - t_start) * 1000
-    logger.info(f"✅ Suna static config loaded in {elapsed:.1f}ms (zero DB calls)")
+    logger.info(f"✅ Nexus static config loaded in {elapsed:.1f}ms (zero DB calls)")
 
 
 async def prewarm_user_agents(user_id: str) -> dict:
@@ -257,13 +257,13 @@ async def prewarm_user_agents(user_id: str) -> dict:
         
         if not agent_ids:
             try:
-                from core.utils.ensure_suna import ensure_suna_installed
-                await ensure_suna_installed(user_id)
+                from core.utils.ensure_nexus import ensure_nexus_installed
+                await ensure_nexus_installed(user_id)
                 agent_ids = await agents_repo.get_user_agent_ids(user_id)
                 if agent_ids:
-                    logger.info(f"[PREWARM] Installed Suna for new user {user_id[:8]}...")
+                    logger.info(f"[PREWARM] Installed Nexus for new user {user_id[:8]}...")
             except Exception as e:
-                logger.debug(f"[PREWARM] Could not ensure Suna for {user_id[:8]}...: {e}")
+                logger.debug(f"[PREWARM] Could not ensure Nexus for {user_id[:8]}...: {e}")
         
         if not agent_ids:
             logger.debug(f"[PREWARM] No agents for user {user_id[:8]}...")
@@ -279,7 +279,7 @@ async def prewarm_user_agents(user_id: str) -> dict:
         async def prewarm_single(agent_id: str) -> bool:
             try:
                 agent_type = await get_cached_agent_type(agent_id)
-                if agent_type == "suna":
+                if agent_type == "nexus":
                     mcps = await get_cached_user_mcps(agent_id)
                     if mcps is not None:
                         return None 

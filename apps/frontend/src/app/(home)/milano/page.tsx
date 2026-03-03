@@ -9,13 +9,13 @@ import { useAuth } from '@/components/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useOptimisticAgentStart } from '@/hooks/threads';
 import { useAgentSelection } from '@/stores/agent-selection-store';
-import { useSunaModePersistence } from '@/stores/suna-modes-store';
+import { useNexusModePersistence } from '@/stores/nexus-modes-store';
 import { useQuery } from '@tanstack/react-query';
 import { agentKeys } from '@/hooks/agents/keys';
 import { getAgents } from '@/hooks/agents/utils';
 
-const SunaModesPanel = lazy(() => 
-  import('@/components/dashboard/suna-modes-panel').then(mod => ({ default: mod.SunaModesPanel }))
+const NexusModesPanel = lazy(() => 
+  import('@/components/dashboard/nexus-modes-panel').then(mod => ({ default: mod.NexusModesPanel }))
 );
 
 // Mobile users are redirected at the edge by middleware (hyper-fast)
@@ -41,7 +41,7 @@ export default function MilanoPage() {
     setSelectedCharts,
     setSelectedOutputFormat,
     setSelectedTemplate,
-  } = useSunaModePersistence();
+  } = useNexusModePersistence();
 
   const { data: agentsResponse } = useQuery({
     queryKey: agentKeys.list({
@@ -70,7 +70,7 @@ export default function MilanoPage() {
   const selectedAgent = selectedAgentId
     ? agents.find(agent => agent.agent_id === selectedAgentId)
     : null;
-  const isSunaAgent = !user || selectedAgent?.metadata?.is_suna_default || false;
+  const isNexusAgent = !user || selectedAgent?.metadata?.is_nexus_default || false;
 
   const handleChatInputSubmit = useLeadingDebouncedCallback(async (
     message: string,
@@ -124,7 +124,7 @@ export default function MilanoPage() {
               </div>
               
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-tighter text-balance text-center px-4 sm:px-2">
-                Kortix.
+                Nexus.
               </h1>
               
               <div className="text-center space-y-2 max-w-3xl px-4">
@@ -159,10 +159,10 @@ export default function MilanoPage() {
                 </div>
               </div>
 
-              {isSunaAgent && (
+              {isNexusAgent && (
                 <div className="w-full max-w-3xl mx-auto mt-4 px-4 sm:px-0">
                   <Suspense fallback={<div className="h-24 animate-pulse bg-muted/10 rounded-lg" />}>
-                    <SunaModesPanel
+                    <NexusModesPanel
                       selectedMode={selectedMode}
                       onModeSelect={setSelectedMode}
                       onSelectPrompt={setInputValue}

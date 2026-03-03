@@ -45,8 +45,8 @@ const PresenceDebug = lazy(() =>
   import('@/components/debug/presence-debug').then(mod => ({ default: mod.PresenceDebug }))
 );
 
-const KortixAppBanners = lazy(() => 
-  import('@/components/announcements/kortix-app-banners').then(mod => ({ default: mod.KortixAppBanners }))
+const NexusAppBanners = lazy(() => 
+  import('@/components/announcements/nexus-app-banners').then(mod => ({ default: mod.NexusAppBanners }))
 );
 
 const TutorialsBanner = lazy(() => 
@@ -255,9 +255,9 @@ export default function DashboardLayoutContent({
         <Suspense fallback={null}>
           <PresentationViewerWrapper />
         </Suspense>
-        {/* Kortix App announcement banners */}
+        {/* Nexus App announcement banners */}
         <Suspense fallback={null}>
-          <KortixAppBanners disableMobileAdvertising={featureFlags.disableMobileAdvertising} />
+          <NexusAppBanners disableMobileAdvertising={featureFlags.disableMobileAdvertising} />
         </Suspense>
         {/* Tutorials banner for new users */}
         <Suspense fallback={null}>

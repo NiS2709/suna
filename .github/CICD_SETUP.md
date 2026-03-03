@@ -8,9 +8,9 @@ main (DEV) ──promote──> staging (PRE-PROD) ──promote──> PRODUCTI
 
 | Branch | Environment | Endpoint | Auto-Deploy |
 |--------|-------------|----------|-------------|
-| `main` | DEV | dev-api.kortix.com | ✅ On push |
-| `staging` | STAGING | staging-api.kortix.com | ✅ On push |
-| `PRODUCTION` | PRODUCTION | api.kortix.com | ✅ On push |
+| `main` | DEV | dev-api.nexus.com | ✅ On push |
+| `staging` | STAGING | staging-api.nexus.com | ✅ On push |
+| `PRODUCTION` | PRODUCTION | api.nexus.com | ✅ On push |
 
 ## Workflow
 
@@ -85,10 +85,10 @@ Three environments are configured for deployment protection:
 
 | Environment | Instance | IP | Tunnel ID |
 |-------------|----------|-----|-----------|
-| DEV | suna-dev | 52.24.67.100 | 3a533a53-67d0-487c-b716-261c863270ee |
-| STAGING | suna-staging | 54.184.54.33 | 503813f5-2426-401a-b72f-15bd11d4b4ba |
-| PRODUCTION | suna-prod | 54.148.221.72 | f4125d84-33d5-424d-ae6b-2b84b790392b |
-| PRODUCTION (ECS) | suna-ecs | ALB | N/A |
+| DEV | nexus-dev | 52.24.67.100 | 3a533a53-67d0-487c-b716-261c863270ee |
+| STAGING | nexus-staging | 54.184.54.33 | 503813f5-2426-401a-b72f-15bd11d4b4ba |
+| PRODUCTION | nexus-prod | 54.148.221.72 | f4125d84-33d5-424d-ae6b-2b84b790392b |
+| PRODUCTION (ECS) | nexus-ecs | ALB | N/A |
 
 ## Pulumi Stacks
 
@@ -99,4 +99,4 @@ cd infra/environments/staging && pulumi stack output
 cd infra/environments/prod && pulumi stack output
 ```
 
-Pulumi Cloud: https://app.pulumi.com/kortix
+Pulumi Cloud: https://app.pulumi.com/nexus
