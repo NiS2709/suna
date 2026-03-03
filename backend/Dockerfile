@@ -1,28 +1,26 @@
-FROM ghcr.io/astral-sh/uv:python3.11-alpine
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim
 
 ENV ENV_MODE production
 WORKDIR /app
 
-RUN apk add --no-cache curl git \
-    # Dependencies for Python package compilation
-    freetype-dev \
-    gcc \
-    linux-headers \
-    musl-dev \
-    python3-dev \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    git \
     # Dependencies for WeasyPrint (PDF generation)
-    pango \
-    cairo \
-    gdk-pixbuf \
-    libffi \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libcairo2 \
+    libgdk-pixbuf2.0-0 \
+    libffi-dev \
     fontconfig \
-    ttf-dejavu \
-    ttf-liberation
+    fonts-dejavu-core \
+    fonts-liberation \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
 COPY pyproject.toml uv.lock ./
 ENV UV_LINK_MODE=copy
-RUN uv sync --locked --quiet
+RUN uv sync --locked
 
 # Copy application code
 COPY . .
