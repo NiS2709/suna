@@ -28,6 +28,7 @@ COPY . .
 ENV PYTHONPATH=/app
 EXPOSE 8000
 
-# WORKERS and TIMEOUT are set via env variables at runtime (ECS task definition)
-# Defaults: WORKERS=4 (2 per vCPU), TIMEOUT=75 (worker heartbeat - async workers stay alive during active streams)
-CMD ["sh", "-c", "uv run gunicorn api:app -w ${WORKERS:-4} -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --timeout ${TIMEOUT:-75} --graceful-timeout 30 --keep-alive 65"]
+# WORKERS and TIMEOUT are set via env variables at runtime
+# Supports both WORKERS and WEB_CONCURRENCY env vars (Railway uses WEB_CONCURRENCY)
+# Defaults: WORKERS=1 for Railway compatibility, TIMEOUT=75
+CMD ["sh", "-c", "uv run gunicorn api:app -w ${WORKERS:-${WEB_CONCURRENCY:-1}} -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --timeout ${TIMEOUT:-75} --graceful-timeout 30 --keep-alive 65"]
